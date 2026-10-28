@@ -14,17 +14,18 @@ env:
 jobs:
   android:
     name: APK de Android
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
+      - uses: android-actions/setup-android@v3
       - name: Instalar dependencias
         run: npm ci
         env:
@@ -35,7 +36,10 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon --stacktrace
+          set -o pipefail
+          ./gradlew assembleRelease --no-daemon 2>&1 | tee gradle.log || {
+            grep -E "error:|What went wrong|FAILED|Exception|> " gradle.log | head -40 | while IFS= read -r l; do echo "::error::$l"; done
+            exit 1; }
         env:
           GSM_VERSION_CODE: ${{ github.run_number }}
           GSM_VERSION_NAME: ${{ env.VERSION }}
