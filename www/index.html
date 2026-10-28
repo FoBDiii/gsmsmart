@@ -444,7 +444,7 @@ function viewDetail(){
   <div class="dhead"><div><div class="stamp">Nº ${pad(r.no)}</div><h1>${esc(r.marca)} ${esc(r.modelo)}</h1><p class="sub">${esc(full(r))} · entrada ${fdate(r.fecha)}${r.entrega?' · entrega prevista '+fday(r.entrega):''}</p></div>${pill(r.estado)}</div>
   <div class="seg" role="group" aria-label="Estado">${ESTADOS.map(([k,l])=>`<button class="st-${k}" data-st="${k}" aria-pressed="${r.estado===k}">${l}</button>`).join('')}</div>
   <div class="actions">
-    <button class="btn primary" id="aPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>Imprimir hoja</button>
+    <button class="btn primary" id="aPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>${NATIVE?"Hoja del cliente":"Imprimir hoja"}</button>
     ${r.telefono?`<a class="btn wa" href="${waLink(r)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7a11 11 0 0 1-4.3-3.8c-.4-.6-1-1.7-1-3.2s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.7-.1 1.3z"/></svg>Avisar por WhatsApp</a>`:''}
     <button class="btn" id="aEdit">Editar</button>
     <button class="btn danger ghost" id="aDel">Eliminar</button>
@@ -530,7 +530,7 @@ function viewWizard(){
    <h2 class="q">${s.q}</h2>${s.help?`<p class="qhelp">${s.help}</p>`:'<div style="height:16px"></div>'}
    <form id="wf" novalidate>${s.html()}<div class="err" id="werr" role="alert"></div>
    <div class="wfoot">${step>0?'<button type="button" class="btn big" id="wBack">Atrás</button>':'<span></span>'}
-   ${last?`<button type="button" class="btn big" id="wSave">${editingId?'Guardar':'Guardar'}</button><button type="submit" class="btn primary big">${editingId?'Guardar e imprimir':'Guardar e imprimir'}</button>`:'<button type="submit" class="btn primary big">Siguiente</button>'}</div></form></div>`}
+   ${last?`<button type="button" class="btn big" id="wSave">${editingId?'Guardar':'Guardar'}</button><button type="submit" class="btn primary big">${editingId?(NATIVE?'Guardar y ver hoja':'Guardar e imprimir'):(NATIVE?'Guardar y ver hoja':'Guardar e imprimir')}</button>`:'<button type="submit" class="btn primary big">Siguiente</button>'}</div></form></div>`}
 function bindWizard(){
   const f=$('#wf');
   f.querySelectorAll('input.inp,textarea.inp').forEach(el=>{
@@ -616,10 +616,34 @@ function sheetHtml(r){
    <div class="sh-foot"><span>Orden nº ${pad(r.no)}</span><span>Conserve este resguardo para recoger su terminal</span></div></div>`}
 function printPreview(r){
   modal(`<h3>Hoja para el cliente · nº ${pad(r.no)}</h3><div class="sheetwrap">${sheetHtml(r)}</div>
-   <div class="mact"><button class="btn" id="mClose">Cerrar</button><button class="btn primary" id="mPrint">Imprimir</button></div>`,true);
+   <div class="mact"><button class="btn" id="mClose">Cerrar</button>${NATIVE
+     ?`<button class="btn" id="mPdf">Guardar PDF</button><button class="btn wa" id="mWa">Enviar por WhatsApp</button>`
+     :`<button class="btn primary" id="mPrint">Imprimir</button>`}</div>`,true);
   $('#mClose').onclick=closeModal;
-  $('#mPrint').onclick=()=>{$('#print').innerHTML=sheetHtml(r);
-    setTimeout(()=>{if(NATIVE)NATIVE.print({title:'GSMsmart '+pad(r.no)}).catch(e=>toast('No se ha podido imprimir: '+(e&&e.message||e)));else window.print()},80)};
+  if(!NATIVE){$('#mPrint').onclick=()=>{$('#print').innerHTML=sheetHtml(r);setTimeout(()=>window.print(),80)};return}
+  const name='GSMsmart-'+pad(r.no)+'.pdf';
+  const busy=(b,on,txt)=>{b.disabled=on;if(txt)b.textContent=txt};
+  $('#mPdf').onclick=async e=>{const b=e.currentTarget;busy(b,true,'Creando PDF…');
+    try{const data=await makePdf(r);const x=await NATIVE.saveFile({name,content:data,base64:true,mime:'application/pdf'});toast('PDF guardado en '+x.path)}
+    catch(err){toast('No se ha podido crear el PDF: '+(err&&err.message||err))}finally{busy(b,false,'Guardar PDF')}};
+  $('#mWa').onclick=async e=>{const b=e.currentTarget;busy(b,true,'Preparando…');
+    try{const data=await makePdf(r);let tel=String(r.telefono||'').replace(/\D/g,'');if(tel.length===9)tel='34'+tel;
+      await NATIVE.sharePdf({name,content:data,phone:tel,text:`Hola ${r.nombre}, te enviamos la ficha de tu reparación nº ${pad(r.no)} (${r.marca} ${r.modelo}) de ${S.tienda}. Guárdala, la necesitarás para recoger el móvil.`})}
+    catch(err){toast('No se ha podido enviar: '+(err&&err.message||err))}finally{busy(b,false,'Enviar por WhatsApp')}};
+}
+/* PDF de la hoja (Android): se dibuja la hoja y se mete en un A4 */
+function loadScript(src){return new Promise((ok,ko)=>{if(document.querySelector(`script[src="${src}"]`))return ok();const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>ko(new Error('falta '+src));document.head.appendChild(s)})}
+async function makePdf(r){
+  await loadScript('lib/html2canvas.min.js');await loadScript('lib/jspdf.umd.min.js');
+  const host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:760px;background:#fff';
+  host.innerHTML=sheetHtml(r);document.body.appendChild(host);
+  try{
+    const c=await html2canvas(host.firstElementChild,{scale:2,backgroundColor:'#ffffff',logging:false});
+    const pdf=new window.jspdf.jsPDF({unit:'mm',format:'a4'});const W=210,H=297,m=8;
+    let w=W-2*m,h=c.height*w/c.width;if(h>H-2*m){h=H-2*m;w=c.width*h/c.height}
+    pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',(W-w)/2,m,w,h);
+    return pdf.output('datauristring').split(',')[1];
+  }finally{host.remove()}
 }
 window.addEventListener('afterprint',()=>{$('#print').innerHTML=''});
 

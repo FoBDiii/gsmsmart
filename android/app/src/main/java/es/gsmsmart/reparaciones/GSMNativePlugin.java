@@ -11,6 +11,9 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.content.pm.PackageManager;
+import androidx.core.content.FileProvider;
 import android.webkit.WebView;
 
 import com.getcapacitor.JSObject;
@@ -52,7 +55,9 @@ public class GSMNativePlugin extends Plugin {
         String name = call.getString("name", "gsmsmart.json");
         String content = call.getString("content", "");
         String mime = call.getString("mime", "application/json");
-        byte[] data = content.getBytes(StandardCharsets.UTF_8);
+        byte[] data = call.getBoolean("base64", false)
+                ? Base64.decode(content, Base64.DEFAULT)
+                : content.getBytes(StandardCharsets.UTF_8);
         try {
             JSObject ret = new JSObject();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -76,6 +81,50 @@ public class GSMNativePlugin extends Plugin {
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
+    }
+
+    /** Envía un PDF por WhatsApp (o WhatsApp Business) abriendo, si se puede, el chat del cliente. */
+    @PluginMethod
+    public void sharePdf(PluginCall call) {
+        String name = call.getString("name", "ficha.pdf");
+        String content = call.getString("content", "");
+        String phone = call.getString("phone", "");
+        String text = call.getString("text", "");
+        try {
+            File dir = new File(getContext().getCacheDir(), "compartir");
+            if (!dir.exists()) dir.mkdirs();
+            File f = new File(dir, name);
+            try (FileOutputStream os = new FileOutputStream(f)) { os.write(Base64.decode(content, Base64.DEFAULT)); }
+            Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+
+            Intent send = new Intent(Intent.ACTION_SEND);
+            send.setType("application/pdf");
+            send.putExtra(Intent.EXTRA_STREAM, uri);
+            if (!text.isEmpty()) send.putExtra(Intent.EXTRA_TEXT, text);
+            send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            String pkg = installed("com.whatsapp.w4b") ? "com.whatsapp.w4b" : installed("com.whatsapp") ? "com.whatsapp" : null;
+            Intent toStart;
+            if (pkg != null) {
+                send.setPackage(pkg);
+                if (phone != null && phone.length() >= 9) send.putExtra("jid", phone + "@s.whatsapp.net");
+                toStart = send;
+            } else {
+                toStart = Intent.createChooser(send, "Enviar ficha");
+            }
+            toStart.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(toStart);
+            JSObject ret = new JSObject();
+            ret.put("app", pkg == null ? "otra" : pkg);
+            call.resolve(ret);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    private boolean installed(String pkg) {
+        try { getContext().getPackageManager().getPackageInfo(pkg, 0); return true; }
+        catch (PackageManager.NameNotFoundException e) { return false; }
     }
 
     @PluginMethod
