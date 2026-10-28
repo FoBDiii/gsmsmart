@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GSMsmart</string>
+    <string name="title_activity_main">GSMsmart</string>
+    <string name="package_name">es.gsmsmart.reparaciones</string>
+    <string name="custom_url_scheme">es.gsmsmart.reparaciones</string>
+</resources>

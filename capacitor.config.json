@@ -1,0 +1,6 @@
+{
+  "appId": "es.gsmsmart.reparaciones",
+  "appName": "GSMsmart",
+  "webDir": "www",
+  "android": { "adjustMarginsForEdgeToEdge": "force", "backgroundColor": "#F2F4F8" }
+}

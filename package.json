@@ -1,0 +1,33 @@
+{
+  "name": "gsmsmart",
+  "productName": "GSMsmart",
+  "version": "1.0.0",
+  "description": "GSMsmart Reparaciones - gestión de reparaciones para la tienda",
+  "author": "GSMsmart",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win --publish never",
+    "cap:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "7.6.9",
+    "@capacitor/app": "7.1.2",
+    "@capacitor/core": "7.6.9"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "7.6.9",
+    "electron": "33.4.11",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "es.gsmsmart.reparaciones",
+    "productName": "GSMsmart",
+    "files": ["electron/**", "www/**", "package.json"],
+    "directories": { "output": "dist", "buildResources": "build" },
+    "win": { "target": ["nsis", "portable"], "icon": "build/icon.ico" },
+    "nsis": { "oneClick": true, "perMachine": false, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "GSMsmart", "artifactName": "GSMsmart-Instalador-${version}.${ext}" },
+    "portable": { "artifactName": "GSMsmart-Portable-${version}.${ext}" }
+  }
+}

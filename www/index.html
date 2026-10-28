@@ -1,0 +1,682 @@
+<!--LOCAL--><!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<!--/LOCAL-->
+<title>GSMsmart Reparaciones</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#4BBAFC">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Mostrador de taller: panel lateral (PC) o barra inferior (móvil) + área de trabajo; el alta va en un asistente de una pregunta por pantalla */
+:root{
+  --bg:#F2F4F8;--surface:#FFFFFF;--surface-2:#F6F8FB;--ink:#0F1B2D;--muted:#5B6779;--line:#DCE2EA;
+  --accent:#0A74C2;--accent-soft:#E2F2FD;--on-accent:#FFFFFF;--stamp:#C8372D;--danger:#C8372D;
+  --p-bg:#FFF1D1;--p-fg:#865600;--r-bg:#DCEEFB;--r-fg:#0B5C99;--l-bg:#DAF3E3;--l-fg:#15693B;--e-bg:#E9EDF2;--e-fg:#556173;
+  --shadow:0 1px 2px rgba(15,27,45,.06),0 8px 24px rgba(15,27,45,.06);
+  --f-display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1320;--surface:#141F31;--surface-2:#1A273C;--ink:#E7EDF6;--muted:#97A3B6;--line:#26344C;
+  --accent:#5BC0FF;--accent-soft:#12304A;--on-accent:#0C1320;--stamp:#FF7466;--danger:#FF7466;
+  --p-bg:#3A2E10;--p-fg:#FFD27A;--r-bg:#143552;--r-fg:#9AD6FF;--l-bg:#123425;--l-fg:#8BE0AE;--e-bg:#222D3D;--e-fg:#A3AEBF;
+  --shadow:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1320;--surface:#141F31;--surface-2:#1A273C;--ink:#E7EDF6;--muted:#97A3B6;--line:#26344C;
+  --accent:#5BC0FF;--accent-soft:#12304A;--on-accent:#0C1320;--stamp:#FF7466;--danger:#FF7466;
+  --p-bg:#3A2E10;--p-fg:#FFD27A;--r-bg:#143552;--r-fg:#9AD6FF;--l-bg:#123425;--l-fg:#8BE0AE;--e-bg:#222D3D;--e-fg:#A3AEBF;
+  --shadow:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.stamp{font-family:var(--f-mono);color:var(--stamp);font-weight:600;letter-spacing:.04em}
+
+/* Estructura */
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100%}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 22px}
+.logo{width:46px;height:46px;border-radius:50%;flex:none;display:block}
+.brand b{font-family:var(--f-display);font-size:20px;font-weight:800;letter-spacing:-.02em}
+.brand b span{color:var(--accent)}
+.brand small{display:block;color:var(--muted);font-size:12px;line-height:1.2}
+.navbtn{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;border:0;background:none;text-align:left;font-weight:600;color:var(--muted)}
+.navbtn svg{width:20px;height:20px;flex:none}
+.navbtn:hover{background:var(--surface-2);color:var(--ink)}
+.navbtn[aria-current="true"]{background:var(--accent-soft);color:var(--accent)}
+.side .foot{margin-top:auto;font-size:12px;color:var(--muted);padding:0 10px}
+main{padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0}
+.wrap{max-width:1000px;margin:0 auto}
+.tabbar{display:none}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:11px 16px;border:1px solid var(--line);background:var(--surface);font-weight:600;min-height:44px;text-decoration:none;color:var(--ink)}
+.btn svg{width:18px;height:18px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.wa{background:#1F9D55;border-color:#1F9D55;color:#fff}
+.btn.danger{color:var(--danger)}
+.btn.ghost{border-color:transparent;background:none}
+.btn.big{min-height:54px;font-size:17px;padding:14px 22px;border-radius:14px}
+
+/* Lista */
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.head h1{font-size:30px;font-weight:800}
+.sub{color:var(--muted);margin:4px 0 0}
+.search{position:relative;margin-bottom:12px}
+.search svg{position:absolute;left:14px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--muted)}
+.search input{width:100%;padding:13px 14px 13px 42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:16px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.fchip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-weight:600;font-size:14px;color:var(--muted)}
+.fchip b{font-variant-numeric:tabular-nums;margin-left:4px;color:var(--ink)}
+.fchip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.fchip[aria-pressed="true"] b{color:var(--bg)}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.row{display:grid;grid-template-columns:96px minmax(0,1.4fr) minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 18px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;width:100%}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--surface-2)}
+.row .who b{display:block;font-size:16px}
+.row .who span,.row .what{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .end{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.row .end small{color:var(--muted);font-variant-numeric:tabular-nums}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st-pendiente{background:var(--p-bg);color:var(--p-fg)}
+.st-reparando{background:var(--r-bg);color:var(--r-fg)}
+.st-lista{background:var(--l-bg);color:var(--l-fg)}
+.st-entregada{background:var(--e-bg);color:var(--e-fg)}
+.empty{padding:48px 20px;text-align:center;color:var(--muted)}
+.empty h3{color:var(--ink);font-size:20px;margin-bottom:6px}
+
+/* Detalle */
+.back{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-weight:600;padding:6px 0;margin-bottom:10px}
+.back svg{width:18px;height:18px}
+.dhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.dhead h1{font-size:28px;font-weight:800}
+.dhead .stamp{font-size:15px}
+.seg{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;margin-bottom:14px}
+.seg button{flex:1 1 130px;border:0;border-radius:10px;padding:10px 8px;background:none;font-weight:700;color:var(--muted);font-size:14px}
+.seg button[aria-pressed="true"].st-pendiente,.seg button[aria-pressed="true"].st-reparando,.seg button[aria-pressed="true"].st-lista,.seg button[aria-pressed="true"].st-entregada{color:inherit}
+.seg button.st-pendiente[aria-pressed="false"],.seg button.st-reparando[aria-pressed="false"],.seg button.st-lista[aria-pressed="false"],.seg button.st-entregada[aria-pressed="false"]{background:none;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card h3{font-size:13px;font-family:var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:12px}
+.kv{display:grid;grid-template-columns:130px minmax(0,1fr);gap:8px 12px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.chips-ro{display:flex;flex-wrap:wrap;gap:6px}
+.chips-ro span{background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:4px 9px;font-weight:600;font-size:14px}
+.sigbox{background:#fff;border:1px solid var(--line);border-radius:12px;height:120px;display:grid;place-items:center;color:#7a8597}
+.sigbox img{max-height:110px}
+.hist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.hist li{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.hist small{color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Asistente */
+.wiz{max-width:640px;margin:0 auto}
+.wtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.wtop .stepn{color:var(--muted);font-weight:600;font-size:14px}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:28px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .3s}
+.q{font-size:clamp(26px,5vw,34px);font-weight:800;margin-bottom:6px}
+.qhelp{color:var(--muted);margin:0 0 22px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label{font-weight:700;font-size:14px}
+.field label small{font-weight:500;color:var(--muted)}
+.inp{width:100%;padding:15px 16px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:18px}
+.inp:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+textarea.inp{min-height:110px;resize:vertical;font-size:16px}
+.err{color:var(--danger);font-weight:600;font-size:14px;min-height:20px}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+.choice{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:13px 10px;font-weight:600;min-height:52px;text-align:center;line-height:1.2}
+.choice:hover{border-color:var(--muted)}
+.choice[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.choices.sm{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}
+.choices.sm .choice{min-height:42px;padding:9px 8px;font-size:14px}
+.suggest{display:flex;flex-direction:column;gap:6px;margin:-4px 0 16px}
+.suggest p{margin:0;color:var(--muted);font-size:13px;font-weight:600}
+.suggest button{display:flex;justify-content:space-between;gap:10px;border:1px dashed var(--accent);background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 12px;text-align:left}
+.suggest button span{color:var(--muted)}
+.toggle{display:flex;align-items:center;gap:14px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;cursor:pointer}
+.toggle input{width:24px;height:24px;accent-color:var(--accent);flex:none}
+.toggle b{display:block}
+.toggle span{color:var(--muted);font-size:14px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.euro{position:relative}
+.euro .inp{padding-right:40px;-moz-appearance:textfield}
+.euro .inp::-webkit-inner-spin-button,.euro .inp::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.euro::after{content:"€";position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;font-size:18px}
+.sigwrap{position:relative;background:#fff;border:1.5px dashed #9AA6B8;border-radius:14px;height:220px;margin-bottom:10px;touch-action:none}
+.sigwrap canvas{width:100%;height:100%;display:block;touch-action:none;border-radius:14px}
+.sigwrap .hint{position:absolute;inset:auto 0 18px;text-align:center;color:#8B96A8;pointer-events:none;font-weight:600}
+.sigwrap .line{position:absolute;left:24px;right:24px;bottom:48px;border-top:1px solid #C9D1DC;pointer-events:none}
+details.cond{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+details.cond summary{font-weight:700;cursor:pointer}
+details.cond ol{margin:10px 0 0;padding-left:20px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:6px}
+.sumgrid{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.sumrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.sumrow h4{margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.sumrow p{margin:0;font-weight:600;overflow-wrap:anywhere}
+.sumrow button{border:0;background:none;color:var(--accent);font-weight:700;padding:4px}
+.wfoot{position:sticky;bottom:0;display:flex;gap:10px;justify-content:space-between;padding:14px 0 calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 70%,transparent);margin-top:18px}
+.wfoot .btn.primary{flex:1;max-width:360px;margin-left:auto}
+
+/* Ajustes */
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sgrid .card.full{grid-column:1/-1}
+.card .field .inp{font-size:16px;padding:12px 14px}
+.card p.note{color:var(--muted);margin:0 0 12px;font-size:14px}
+
+/* Modal, aviso */
+#modal{position:fixed;inset:0;background:rgba(8,14,24,.55);display:flex;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:50;overflow:auto}
+.mbox{background:var(--surface);border-radius:18px;padding:20px;width:100%;max-width:440px;margin:auto;box-shadow:var(--shadow)}
+.mbox.wide{max-width:860px}
+.mbox h3{font-size:22px;margin-bottom:8px}
+.mbox p{color:var(--muted);margin:0 0 18px}
+.mact{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.sheetwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin-bottom:14px;background:#e9ecf0;padding:12px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;z-index:60;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+
+/* Hoja imprimible (papel: colores fijos a propósito) */
+#print{display:none}
+.sheet{background:#fff;color:#111;width:760px;max-width:none;margin:0 auto;padding:28px 32px;font:12px/1.35 Arial,Helvetica,sans-serif}
+.sheet *,.mbox .sheet p{color:#111}
+.mbox .sheet p{margin:8px 0 4px}
+.sh-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:12px}
+.sh-brand{display:flex;gap:12px;align-items:center}
+.sh-brand img{width:78px;height:78px;border-radius:50%}
+.sh-logo{font:800 26px/1 var(--f-display);letter-spacing:-.02em}
+.sh-logo span{color:#1A9BE8}
+.sh-addr{margin-top:4px;color:#444}
+.sh-meta{text-align:right;display:flex;flex-direction:column;gap:6px}
+.sh-meta .bx{display:inline-block;min-width:120px;border:1px solid #111;padding:3px 8px;text-align:right;font-weight:700}
+.sh-meta .bx.g{background:#e2e2e2;border-color:#e2e2e2;font-size:15px}
+.sh-no{font:700 22px Georgia,serif;margin:12px 0 10px}
+.sh-no span{font-family:var(--f-mono);color:#C8372D;font-weight:500;letter-spacing:.06em;font-size:26px}
+.sh-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:12px}
+.sh-sec h4{margin:0 0 6px;font-size:13px;text-decoration:underline}
+.ln{display:flex;gap:6px;align-items:baseline;margin-bottom:5px}
+.ln b{font-size:11px;white-space:nowrap}
+.ln span{flex:1;border-bottom:1px solid #777;min-height:15px;padding-left:4px;font-size:13px}
+.sh-client{border:1.5px solid #111;border-radius:10px;padding:10px 12px}
+.sh-rev{display:inline-flex;align-items:center;gap:8px;background:#444;border-radius:8px;padding:6px 12px;margin-top:10px;font-weight:700;font-size:15px}
+.sh-rev,.sh-rev *{color:#fff}
+.sh-rev i{width:18px;height:18px;background:#fff;border-radius:3px;display:grid;place-items:center;font-style:normal;color:#111!important;font-size:13px}
+.sh-checks{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 10px;margin:6px 0 10px}
+.cb{display:flex;gap:6px;align-items:center;font-weight:700;font-size:11px;text-transform:uppercase}
+.cb i{width:16px;height:16px;border:1.5px solid #111;flex:none;display:grid;place-items:center;font-style:normal;font-size:13px;line-height:1}
+.sh-otros{border-bottom:1px dashed #777;min-height:36px;padding:2px 4px;font-size:13px;margin-bottom:10px;white-space:pre-wrap}
+.sh-aviso{text-align:center;font-weight:700;font-style:italic;text-transform:uppercase;margin:8px 0 4px}
+.sh-cond h5{text-align:center;margin:0 0 4px;font-size:11px;text-decoration:underline}
+.sh-cond ol{margin:0;padding-left:18px;font-size:9.5px;line-height:1.28}
+.sh-sign{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px}
+.sh-sign div{border:1.5px solid #111;height:96px;padding:6px 10px;text-align:center;font-weight:700;font-size:13px;position:relative}
+.sh-sign img{max-height:62px;max-width:90%;display:block;margin:4px auto 0}
+.sh-sign small{display:block;font-weight:400;margin-top:30px}
+.sh-foot{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#444}
+
+@media print{
+  @page{size:A4;margin:8mm}
+  body{background:#fff}
+  body > *:not(#print){display:none!important}
+  #print{display:block!important}
+  .sheet{width:100%;padding:0}
+}
+
+/* Móvil */
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  main{padding-block:16px calc(96px + env(safe-area-inset-bottom,0px))}
+  body.inwiz main{padding-bottom:8px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:20}
+  body.inwiz .tabbar{display:none}
+  .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;color:var(--muted);font-size:12px;font-weight:600;padding:6px 4px;border-radius:10px}
+  .tabbar button svg{width:22px;height:22px}
+  .tabbar button[aria-current="true"]{color:var(--accent)}
+  .tabbar .plus{flex:0 0 auto}
+  .tabbar .plus span.c{width:52px;height:52px;margin-top:-22px;border-radius:16px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;box-shadow:0 6px 16px rgba(10,116,194,.35)}
+  .head h1{font-size:26px}
+  .head .btn.primary{display:none}
+  .row{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:13px 14px}
+  .row .no{grid-column:1;font-size:12px}
+  .row .who{grid-column:1}
+  .row .what{grid-column:1}
+  .row .end{grid-column:2;grid-row:1/4}
+  .cards,.sgrid{grid-template-columns:minmax(0,1fr)}
+  .kv{grid-template-columns:110px minmax(0,1fr)}
+  .actions .btn{flex:1 1 calc(50% - 8px)}
+  .row2{grid-template-columns:minmax(0,1fr)}
+  .mobile-brand{display:flex}
+}
+.mobile-brand{display:none;align-items:center;gap:8px;margin-bottom:14px}
+.mobile-brand .logo{width:34px;height:34px}
+.payinfo{background:var(--accent-soft);border-radius:14px;padding:14px 16px;margin-bottom:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 16px}
+.payinfo p{grid-column:1/-1;margin:0 0 6px;font-weight:600;color:var(--accent)}
+.payinfo span{color:var(--muted);font-size:13px;font-weight:600}
+.payinfo b{display:block;font-size:22px;font-family:var(--f-display);font-variant-numeric:tabular-nums}
+.payinfo.none{display:block;color:var(--muted);background:var(--surface);border:1px dashed var(--line)}
+.mobile-brand b{font-family:var(--f-display);font-weight:800;font-size:18px}
+.mobile-brand b span{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<!--LOCAL--></head>
+<body><!--/LOCAL-->
+
+<div class="app">
+  <aside class="side" aria-label="Menú">
+    <div class="brand">
+      <img class="logo" id="sideLogo" alt="">
+      <div><b>GSM<span>smart</span></b><small>Mobile shop · Burriana</small></div>
+    </div>
+    <button class="navbtn" data-go="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Reparaciones</button>
+    <button class="navbtn" data-go="new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Nueva reparación</button>
+    <button class="navbtn" data-go="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
+    <div class="foot">C/ Escorredor, 66 Bajo<br>12530 Burriana<br>644 46 44 47</div>
+  </aside>
+  <main id="view"></main>
+</div>
+
+<nav class="tabbar" aria-label="Menú">
+  <button data-go="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Reparaciones</button>
+  <button data-go="new" class="plus" aria-label="Nueva reparación"><span class="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+  <button data-go="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Ajustes</button>
+</nav>
+
+<div id="modal" hidden></div>
+<div id="toast" hidden></div>
+<div id="print"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+          set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}},
+          del(k){try{localStorage.removeItem(k)}catch(e){}}};
+
+const LOGO='logo-256.png';
+/* Funciones nativas cuando corre como app de Android (imprimir, guardar copia, abrir enlaces) */
+const NATIVE=(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()&&window.Capacitor.Plugins.GSMNative)||null;
+const AVERIAS=['Mojado','No enciende','Pantalla LCD','Botón de encendido','Botón de volumen','Tapa trasera','No carga','Formatear','Liberar','Tarjeta SIM / SD','Altavoz','Micrófono','Cobertura','WiFi','Cámara'];
+const MARCAS={'Apple':['iPhone 11','iPhone 12','iPhone 13','iPhone 14','iPhone 15','iPhone 15 Pro','iPhone 16','iPhone 16 Pro','iPhone 17','iPhone SE'],
+ 'Samsung':['Galaxy A15','Galaxy A16','Galaxy A25','Galaxy A35','Galaxy A55','Galaxy A56','Galaxy S23','Galaxy S24','Galaxy S25'],
+ 'Xiaomi':['Redmi Note 12','Redmi Note 13','Redmi Note 14','Redmi 13','Redmi 14C','Xiaomi 14T','Poco X6'],
+ 'Oppo':['A78','A79','A80','Reno 12','Reno 13'],'Realme':['C55','C67','12 Pro','13 Pro'],
+ 'Motorola':['moto g54','moto g84','moto g85','edge 50'],'Huawei':['P30','P40 Lite','nova 11'],
+ 'Google':['Pixel 7','Pixel 8','Pixel 9','Pixel 9a'],'Honor':['X8','Magic 6 Lite','200 Lite'],'Otra':[]};
+const COMPANIAS=['Movistar','Vodafone','Orange','Yoigo','MásMóvil','Digi','Lowi','Libre'];
+const ESTADOS=[['pendiente','Pendiente'],['reparando','En reparación'],['lista','Lista para recoger'],['entregada','Entregada']];
+const EST=Object.fromEntries(ESTADOS);
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const COND=[
+'GSMsmart no se hace responsable de posibles pérdidas de datos en cualquier soporte. Se recomienda hacer copia de la información previamente al depósito del equipo. El usuario se hace responsable en caso de no efectuar las correspondientes copias de seguridad.',
+'El cliente tiene que extraer todas las tarjetas del interior (SIM, memoria, etc.) antes de su entrega, siendo de su exclusiva responsabilidad la pérdida de cualquier tipo de información si no lo hiciera.',
+'El móvil que se entregue mojado o caído, tenga desperfectos o esté quemado, así como en el caso de que tengamos que abrirlo y se compruebe que haya daños en la placa base o se descubran fallos ocultos como no arrancar, reiniciar u otros fallos, la empresa no tendrá responsabilidad alguna y el coste de dicha reparación será a cargo del cliente.',
+'Durante el proceso de la reparación, si no se encuentra recambio, software o no hay solución para el problema, el técnico tiene derecho a la terminación del servicio y se le devuelve el dispositivo al cliente.',
+'La reparación de la placa base tiene una semana de prueba respecto de las mismas averías que originaron su reparación. No garantizamos cualquier otra avería posterior a la entrega del dispositivo al cliente. No damos garantía en todas las reparaciones de placa base.',
+'La reparación del dispositivo que no encienda, no táctil y no ilumina, es decir, que esté inutilizable e inservible: en el caso de que sí encienda el dispositivo tras la reparación, se le cobrará al cliente. La empresa no se responsabilizará en ningún caso de cualquier avería posterior o el mal funcionamiento de cualquier herramienta interna del móvil (Bluetooth, WiFi, etc.). Si el cliente decide reparar también dichas incidencias se le cobrará por separado.',
+'A cada cliente se le entregará una ficha técnica con sus datos que será imprescindible aportar a la hora de recoger el dispositivo. En el caso de que vaya otra persona a retirarlo en su nombre, deberá aportar tal ficha, así como su DNI.',
+'Todas las reparaciones están garantizadas por tres meses, según título IV, artículo 8, del R.D. 58/1988, de 29 de enero.',
+'A partir de los catorce días del aviso de retirada del material en depósito, el cliente se verá obligado al pago de los gastos de almacenamiento según tarifa expuesta al público a 1 euro por día.'];
+const DEF={tienda:'GSMsmart',direccion:'C/ Escorredor, 66 Bajo · 12530 Burriana (Castellón)',telefono:'+34 644 46 44 47',nextNo:153717,revision:5,
+  pctAdelanto:50,limite100:30,diasGracia:14,tarifaDia:1,
+  aviso:'No nos hacemos responsables de cualquier otro fallo que tenga el móvil, solo de nuestra reparación.',condiciones:COND.join('\n')};
+
+let S=Object.assign({},DEF,LS.get('gsm_settings_v2',{}));
+if(/treinta días del aviso/.test(S.condiciones))S.condiciones=S.condiciones.split('\n').map(c=>/treinta días del aviso/.test(c)?COND[8]:c).join('\n');
+/* Almacenaje: cuenta desde que se marca "Lista para recoger" (aviso al cliente) */
+function almacenaje(r){
+  if(r.estado!=='lista')return null;
+  const h=(r.historial||[]).filter(x=>x.estado==='lista').pop();if(!h)return null;
+  const dias=Math.floor((Date.now()-new Date(h.fecha))/864e5),extra=Math.max(0,dias-S.diasGracia);
+  return {dias,extra,cobro:extra*S.tarifaDia,quedan:Math.max(0,S.diasGracia-dias)}}
+let R=LS.get('gsm_reps_v3',null);
+if(R===null){R=ejemplos();LS.set('gsm_reps_v3',R)}
+/* Pago por adelantado: hasta el límite se paga el % indicado; por encima, el 100% */
+const r2=n=>Math.round(n*100)/100;
+function adelantoDe(imp){imp=+imp||0;if(imp<=0)return 0;return imp>+S.limite100?r2(imp):r2(imp*(+S.pctAdelanto)/100)}
+function reglaTxt(imp){imp=+imp||0;if(imp<=0)return '';return imp>+S.limite100?`Más de ${money(S.limite100)}: se paga el 100% por adelantado`:`Hasta ${money(S.limite100)}: se paga el ${S.pctAdelanto}% por adelantado`}
+const adel=r=>r.adelanto!=null?+r.adelanto:adelantoDe(r.importe);
+const pendiente=r=>r2((+r.importe||0)-adel(r));
+/* Nº de recibo automático: fecha y hora de entrada, AAAAMMDDHHMM */
+function reciboDe(iso){const d=new Date(iso),p=n=>String(n).padStart(2,'0');return ''+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+p(d.getHours())+p(d.getMinutes())}
+const rec=r=>esc(r.recibo||reciboDe(r.fecha));
+let state={view:'list',id:null,filter:'activas',q:''};
+let draft=null,step=0,editingId=null,wantPrint=false;
+
+function ejemplos(){
+  const d=n=>{const x=new Date();x.setDate(x.getDate()-n);return x.toISOString()};
+  const f=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+  const b={nif:'',imei:'',codigo:'',compania:'',recibo:'',firma:'',acepta:true,ejemplo:true,otros:''};
+  return [
+   {...b,id:'e1',no:153716,fecha:d(0),nombre:'Laura',apellidos:'Martí Ferrer',telefono:'600 123 456',marca:'Samsung',modelo:'Galaxy A54',imei:'356789104512345',compania:'Movistar',averias:['Pantalla LCD'],otros:'Se ha caído, esquina superior golpeada',importe:89,adelanto:89,revision:false,entrega:f(2),estado:'reparando',historial:[{estado:'pendiente',fecha:d(0)},{estado:'reparando',fecha:d(0)}]},
+   {...b,id:'e2',no:153715,fecha:d(20),nombre:'Joan Vicent',apellidos:'Llorens',telefono:'611 222 333',marca:'Apple',modelo:'iPhone 12',codigo:'1234',averias:['No carga'],otros:'Cambio de conector de carga',importe:25,adelanto:12.5,revision:false,entrega:f(0),estado:'lista',historial:[{estado:'pendiente',fecha:d(20)},{estado:'reparando',fecha:d(19)},{estado:'lista',fecha:d(17)}]},
+   {...b,id:'e3',no:153714,fecha:d(3),nombre:'Marta',apellidos:'Ruiz Gil',telefono:'622 444 555',marca:'Xiaomi',modelo:'Redmi Note 12',averias:['Mojado','No enciende'],importe:0,revision:true,entrega:f(3),estado:'pendiente',historial:[{estado:'pendiente',fecha:d(3)}]}];
+}
+function saveR(){if(!LS.set('gsm_reps_v3',R))toast('No se ha podido guardar en este dispositivo. Revisa el espacio libre.')}
+function saveS(){LS.set('gsm_settings_v2',S)}
+const pad=n=>String(n).padStart(7,'0');
+const money=n=>(+n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const fdate=iso=>iso?new Date(iso).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+const fdateTime=iso=>iso?new Date(iso).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+const fday=s=>s?new Date(s+'T12:00').toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'}):'';
+const full=r=>(r.nombre+' '+(r.apellidos||'')).trim();
+const pill=e=>`<span class="pill st-${e}">${EST[e]}</span>`;
+
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2800)}
+function modal(html,wide){const m=$('#modal');m.innerHTML=`<div class="mbox ${wide?'wide':''}" role="dialog" aria-modal="true">${html}</div>`;m.hidden=false;}
+function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML=''}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+function ask(title,text,okLabel,onOk){modal(`<h3>${esc(title)}</h3><p>${esc(text)}</p><div class="mact"><button class="btn" id="mNo">Cancelar</button><button class="btn primary" id="mOk">${esc(okLabel)}</button></div>`);
+  $('#mNo').onclick=closeModal;$('#mOk').onclick=()=>{closeModal();onOk()}}
+
+/* ---------- Navegación ---------- */
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(!g)return;go(g.dataset.go)});
+function go(v,id){
+  if(v==='new'){startWizard();return}
+  state.view=v;state.id=id||null;render();window.scrollTo(0,0)}
+function render(){
+  document.body.classList.toggle('inwiz',state.view==='wizard');
+  document.querySelectorAll('[data-go]').forEach(b=>{const v=b.dataset.go;b.setAttribute('aria-current',String(v===state.view||(v==='list'&&state.view==='detail')||(v==='new'&&state.view==='wizard')))});
+  const V=$('#view');
+  if(state.view==='list')V.innerHTML=viewList(),bindList();
+  else if(state.view==='detail')V.innerHTML=viewDetail(),bindDetail();
+  else if(state.view==='wizard')V.innerHTML=viewWizard(),bindWizard();
+  else if(state.view==='settings')V.innerHTML=viewSettings(),bindSettings();
+}
+const mobBrand=`<div class="mobile-brand"><img class="logo" src="${LOGO}" alt=""><b>GSM<span>smart</span></b></div>`;
+
+/* ---------- Lista ---------- */
+function viewList(){
+  const act=R.filter(r=>r.estado!=='entregada').length, listas=R.filter(r=>r.estado==='lista').length;
+  const cnt=k=>k==='todas'?R.length:k==='activas'?act:R.filter(r=>r.estado===k).length;
+  const F=[['activas','En el taller'],['pendiente','Pendientes'],['reparando','En reparación'],['lista','Listas'],['entregada','Entregadas'],['todas','Todas']];
+  return `<div class="wrap">${mobBrand}
+  <div class="head"><div><h1>Reparaciones</h1><p class="sub">${act} en el taller · ${listas} ${listas===1?'lista':'listas'} para recoger</p></div>
+  <button class="btn primary big" data-go="new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Nueva reparación</button></div>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input id="q" type="search" placeholder="Buscar por nombre, teléfono, modelo, IMEI o nº" value="${esc(state.q)}" autocomplete="off"></div>
+  <div class="filters">${F.map(([k,l])=>`<button class="fchip" data-f="${k}" aria-pressed="${state.filter===k}">${l}<b>${cnt(k)}</b></button>`).join('')}</div>
+  <div class="list" id="rows"></div></div>`}
+function rowsHtml(){
+  const q=state.q.trim().toLowerCase();
+  let L=R.filter(r=>state.filter==='todas'?true:state.filter==='activas'?r.estado!=='entregada':r.estado===state.filter);
+  if(q)L=L.filter(r=>[full(r),r.telefono,r.marca,r.modelo,r.imei,String(r.no),pad(r.no),r.nif,r.recibo||reciboDe(r.fecha)].join(' ').toLowerCase().replace(/\s+/g,' ').includes(q)||String(r.telefono).replace(/\s/g,'').includes(q.replace(/\s/g,'')));
+  L.sort((a,b)=>b.no-a.no);
+  if(!L.length)return `<div class="empty"><h3>${q?'Sin resultados':'Nada por aquí'}</h3>${q?'Prueba con otro nombre, teléfono o número.':'Pulsa “Nueva reparación” para dar de alta el primer móvil.'}</div>`;
+  return L.map(r=>`<button class="row" data-id="${r.id}">
+   <span class="no stamp">${pad(r.no)}</span>
+   <span class="who"><b>${esc(full(r))}${r.ejemplo?'<span class="tag">Ejemplo</span>':''}</b><span>${esc(r.marca)} ${esc(r.modelo)}</span></span>
+   <span class="what">${esc([...(r.averias||[]),r.otros].filter(Boolean).join(', ')||'Revisión')}</span>
+   <span class="end">${pill(r.estado)}${(a=>a&&a.extra?`<small style="color:var(--danger);font-weight:700">Almacenaje ${money(a.cobro)}</small>`:`<small>${fdate(r.fecha)}</small>`)(almacenaje(r))}</span></button>`).join('')}
+function bindList(){
+  $('#rows').innerHTML=rowsHtml();
+  $('#q').addEventListener('input',e=>{state.q=e.target.value;$('#rows').innerHTML=rowsHtml()});
+  document.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{state.filter=b.dataset.f;render()});
+  $('#rows').addEventListener('click',e=>{const r=e.target.closest('.row');if(r)go('detail',r.dataset.id)});
+}
+
+/* ---------- Detalle ---------- */
+function waLink(r){
+  let t=String(r.telefono||'').replace(/\D/g,'');if(t.length===9)t='34'+t;
+  const msg=`Hola ${r.nombre}, te escribimos de ${S.tienda}. Tu ${r.marca} ${r.modelo} (orden nº ${pad(r.no)}) ya está listo para recoger${pendiente(r)>0?'. Quedan por pagar '+money(pendiente(r)):''}. Recuerda traer la ficha de reparación. Pasados ${S.diasGracia} días se cobra ${money(S.tarifaDia)} por día de almacenaje. ¡Gracias!`;
+  return `https://wa.me/${t}?text=${encodeURIComponent(msg)}`}
+function viewDetail(){
+  const r=R.find(x=>x.id===state.id);if(!r){state.view='list';return viewList()}
+  const kv=a=>`<dl class="kv">${a.filter(x=>x[1]!=null&&x[1]!=='').map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
+  return `<div class="wrap">
+  <button class="back" data-go="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Reparaciones</button>
+  <div class="dhead"><div><div class="stamp">Nº ${pad(r.no)}</div><h1>${esc(r.marca)} ${esc(r.modelo)}</h1><p class="sub">${esc(full(r))} · entrada ${fdate(r.fecha)}${r.entrega?' · entrega prevista '+fday(r.entrega):''}</p></div>${pill(r.estado)}</div>
+  <div class="seg" role="group" aria-label="Estado">${ESTADOS.map(([k,l])=>`<button class="st-${k}" data-st="${k}" aria-pressed="${r.estado===k}">${l}</button>`).join('')}</div>
+  <div class="actions">
+    <button class="btn primary" id="aPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>Imprimir hoja</button>
+    ${r.telefono?`<a class="btn wa" href="${waLink(r)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7a11 11 0 0 1-4.3-3.8c-.4-.6-1-1.7-1-3.2s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.7-.1 1.3z"/></svg>Avisar por WhatsApp</a>`:''}
+    <button class="btn" id="aEdit">Editar</button>
+    <button class="btn danger ghost" id="aDel">Eliminar</button>
+  </div>
+  <div class="cards">
+    <section class="card"><h3>Cliente</h3>${kv([['Nombre',esc(full(r))],['Teléfono',`<span class="mono">${esc(r.telefono)}</span>`],['DNI / NIF',esc(r.nif)]])}</section>
+    <section class="card"><h3>Terminal</h3>${kv([['Marca',esc(r.marca)],['Modelo',esc(r.modelo)],['IMEI',r.imei?`<span class="mono">${esc(r.imei)}</span>`:''],['Código desbloq.',r.codigo?`<span class="mono">${esc(r.codigo)}</span>`:''],['Compañía',esc(r.compania)]])}</section>
+    <section class="card"><h3>Reparación</h3>${(r.averias||[]).length?`<div class="chips-ro">${r.averias.map(a=>`<span>${esc(a)}</span>`).join('')}</div>`:''}${r.otros?`<p style="margin:${(r.averias||[]).length?'12px':'0'} 0 0">${esc(r.otros)}</p>`:''}${!(r.averias||[]).length&&!r.otros?'<p class="sub" style="margin:0">Solo revisión</p>':''}</section>
+    <section class="card"><h3>Importe</h3>${kv([['Presupuesto',r.importe?`<span class="mono">${money(r.importe)}</span>`:'Pendiente de valorar'],['Pagado a cuenta',r.importe?`<span class="mono">${money(adel(r))}</span>`:''],['Pendiente',r.importe?`<span class="mono">${money(pendiente(r))}</span>${pendiente(r)<=0?' · pagado':''}`:''],['Almacenaje',(a=>!a?'':a.extra?`<span style="color:var(--danger)">${a.extra} ${a.extra===1?'día':'días'} de retraso · ${money(a.cobro)}</span>`:`Sin cargo · ${a.quedan===0?'último día gratis':'quedan '+a.quedan+(a.quedan===1?' día':' días')} gratis`)(almacenaje(r))],['Revisión',r.revision?`Sí · ${money(S.revision)}`:'No'],['Recibo nº',`<span class="mono">${rec(r)}</span>`],['Entrega prevista',fday(r.entrega)]])}</section>
+    <section class="card"><h3>Firma del cliente</h3><div class="sigbox">${r.firma?`<img src="${r.firma}" alt="Firma del cliente">`:'Sin firma'}</div></section>
+    <section class="card"><h3>Historial</h3><ul class="hist">${(r.historial||[]).slice().reverse().map(h=>`<li><span>${EST[h.estado]}</span><small>${fdateTime(h.fecha)}</small></li>`).join('')}</ul></section>
+  </div></div>`}
+function bindDetail(){
+  const r=R.find(x=>x.id===state.id);if(!r)return;
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{const s=b.dataset.st;if(s===r.estado)return;r.estado=s;(r.historial=r.historial||[]).push({estado:s,fecha:new Date().toISOString()});saveR();render();
+    if(s==='lista'&&r.telefono)toast('Marcada como lista. Puedes avisar al cliente por WhatsApp.');else toast('Estado: '+EST[s])});
+  $('#aPrint').onclick=()=>printPreview(r);
+  $('#aEdit').onclick=()=>{editingId=r.id;draft=JSON.parse(JSON.stringify(r));step=STEPS.length-1;state.view='wizard';render();window.scrollTo(0,0)};
+  $('#aDel').onclick=()=>ask('¿Eliminar la reparación nº '+pad(r.no)+'?','Se borrará de este dispositivo y no se puede deshacer.','Eliminar',()=>{R=R.filter(x=>x.id!==r.id);saveR();go('list');toast('Reparación eliminada')});
+}
+
+/* ---------- Asistente ---------- */
+const blank=()=>({nombre:'',apellidos:'',telefono:'',nif:'',marca:'',modelo:'',imei:'',codigo:'',compania:'',averias:[],otros:'',importe:'',revision:false,recibo:'',entrega:'',firma:'',acepta:false});
+function startWizard(){
+  editingId=null;const d=LS.get('gsm_draft',null);
+  if(d&&d.draft&&(d.draft.nombre||d.draft.telefono)){draft=d.draft;step=d.step||0;state.view='wizard';render();toast('Continuando la reparación que dejaste a medias');}
+  else{draft=blank();step=0;state.view='wizard';render()}
+  window.scrollTo(0,0)}
+function saveDraft(){if(!editingId)LS.set('gsm_draft',{draft,step})}
+const inp=(id,label,attrs='',help='')=>`<div class="field"><label for="${id}">${label}${help?` <small>${help}</small>`:''}</label><input class="inp" id="${id}" value="${esc(draft[id])}" ${attrs}></div>`;
+
+const STEPS=[
+ {t:'Cliente',q:'¿Cómo se llama el cliente?',help:'Si ya ha venido antes, aparecerá abajo para rellenarlo de un toque.',
+  html:()=>inp('nombre','Nombre','autocomplete="off" autocapitalize="words" required')+inp('apellidos','Apellidos','autocomplete="off" autocapitalize="words"')+'<div id="sugg"></div>',
+  ok:()=>draft.nombre.trim()?'':'Escribe al menos el nombre del cliente.'},
+ {t:'Contacto',q:'¿Teléfono y DNI?',help:'El teléfono sirve para avisarle por WhatsApp cuando el móvil esté listo.',
+  html:()=>inp('telefono','Teléfono','type="tel" inputmode="tel" autocomplete="off"')+inp('nif','DNI / NIF','autocomplete="off" autocapitalize="characters"','(opcional)'),
+  ok:()=>String(draft.telefono).replace(/\D/g,'').length>=9?'':'El teléfono debe tener al menos 9 cifras.'},
+ {t:'Terminal',q:'¿Qué móvil es?',help:'Elige la marca y escribe el modelo.',
+  html:()=>{const known=draft.marca&&MARCAS[draft.marca]&&draft.marca!=='Otra';const otra=draft.marca&&!MARCAS[draft.marca]||draft.marca==='Otra';
+    return `<div class="choices">${Object.keys(MARCAS).map(m=>`<button type="button" class="choice" data-marca="${m}" aria-pressed="${draft.marca===m||(m==='Otra'&&otra)}">${m}</button>`).join('')}</div>
+    ${otra?inp('marcaOtra','Marca','autocomplete="off"').replace(`value="${esc(draft.marcaOtra)}"`,`value="${esc(draft.marca==='Otra'?'':draft.marca)}"`):''}
+    <div class="field"><label for="modelo">Modelo</label><input class="inp" id="modelo" list="modelos" value="${esc(draft.modelo)}" autocomplete="off"><datalist id="modelos">${(known?MARCAS[draft.marca]:[]).map(m=>`<option value="${esc(m)}">`).join('')}</datalist></div>`},
+  ok:()=>!draft.marca||draft.marca==='Otra'?'Elige o escribe la marca.':!draft.modelo.trim()?'Escribe el modelo.':''},
+ {t:'Identificación',q:'IMEI y código de desbloqueo',help:'El IMEI se ve marcando *#06#. Todo es opcional.',
+  html:()=>inp('imei','IMEI','inputmode="numeric" autocomplete="off" maxlength="17"','(15 cifras)')+inp('codigo','Código de desbloqueo / patrón','autocomplete="off"')+
+   `<div class="field"><label for="compania">Compañía telefónica</label><input class="inp" id="compania" value="${esc(draft.compania)}" autocomplete="off"></div>
+    <div class="choices sm">${COMPANIAS.map(c=>`<button type="button" class="choice" data-comp="${c}" aria-pressed="${draft.compania===c}">${c}</button>`).join('')}</div>`,
+  ok:()=>{const n=String(draft.imei).replace(/\D/g,'');return !n||n.length===15?'':'El IMEI tiene 15 cifras. Revísalo o déjalo vacío.'}},
+ {t:'Avería',q:'¿Qué le pasa?',help:'Marca todo lo que corresponda.',
+  html:()=>`<div class="choices sm">${AVERIAS.map(a=>`<button type="button" class="choice" data-av="${esc(a)}" aria-pressed="${draft.averias.includes(a)}">${a}</button>`).join('')}</div>
+   <div class="field"><label for="otros">Otros / observaciones <small>(estado del móvil, golpes, accesorios…)</small></label><textarea class="inp" id="otros">${esc(draft.otros)}</textarea></div>`,
+  ok:()=>draft.averias.length||draft.otros.trim()||draft.revision?'':'Marca al menos una avería o describe el problema.'},
+ {t:'Presupuesto',q:'Presupuesto y entrega',
+  html:()=>`<label class="toggle" for="revision"><input type="checkbox" id="revision" ${draft.revision?'checked':''}><div><b>${money(S.revision)} por revisión</b><span>Marcar si solo se cobra la revisión de momento</span></div></label>
+   <div class="row2"><div class="field"><label for="importe">Importe de la reparación</label><div class="euro"><input class="inp" id="importe" type="number" inputmode="decimal" min="0" step="0.01" value="${esc(draft.importe)}" placeholder="0,00"></div></div>
+   <div class="field"><label for="entrega">Entrega prevista</label><input class="inp" id="entrega" type="date" value="${esc(draft.entrega)}"></div></div>
+   <div id="payinfo">${payHtml()}</div>
+   <div class="choices sm" id="qd">${[['Hoy',0],['Mañana',1],['En 2 días',2],['En 1 semana',7]].map(([l,n])=>`<button type="button" class="choice" data-days="${n}">${l}</button>`).join('')}</div>
+   `,
+  ok:()=>''},
+ {t:'Firma',q:'Firma del cliente',help:'Que el cliente firme con el dedo dentro del recuadro.',
+  html:()=>`<div class="sigwrap"><canvas id="sig" aria-label="Recuadro de firma"></canvas><div class="line"></div><div class="hint" id="sigHint" ${draft.firma?'hidden':''}>Firme aquí</div></div>
+   <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button type="button" class="btn ghost" id="sigClear">Borrar firma</button></div>
+   <details class="cond"><summary>Condiciones del servicio</summary><ol>${S.condiciones.split('\n').filter(Boolean).map(c=>`<li>${esc(c)}</li>`).join('')}</ol></details>
+   <label class="toggle" for="acepta"><input type="checkbox" id="acepta" ${draft.acepta?'checked':''}><div><b>El cliente acepta las condiciones</b><span>${esc(S.aviso)}</span></div></label>`,
+  ok:()=>draft.acepta?'':'El cliente tiene que aceptar las condiciones.'},
+ {t:'Resumen',q:'Revisa antes de guardar',
+  html:()=>{const row=(h,p,s)=>`<div class="sumrow"><div><h4>${h}</h4><p>${p||'—'}</p></div><button type="button" data-jump="${s}">Cambiar</button></div>`;
+   return `<div class="sumgrid">${row('Cliente',esc(full(draft))+'<br><span class="mono">'+esc(draft.telefono)+'</span>'+(draft.nif?' · '+esc(draft.nif):''),0)}
+   ${row('Terminal',esc(draft.marca+' '+draft.modelo)+(draft.imei?'<br><span class="mono">IMEI '+esc(draft.imei)+'</span>':'')+(draft.codigo?'<br>Código: <span class="mono">'+esc(draft.codigo)+'</span>':'')+(draft.compania?'<br>'+esc(draft.compania):''),2)}
+   ${row('Avería',esc([...draft.averias,draft.otros].filter(Boolean).join(', ')||'Revisión'),4)}
+   ${row('Importe',(draft.importe?money(draft.importe)+'<br>Cobrar ahora: <b>'+money(adelantoDe(draft.importe))+'</b> · Al recoger: '+money(r2(draft.importe-adelantoDe(draft.importe))):'Sin presupuesto')+(draft.revision?' · revisión '+money(S.revision):'')+(draft.entrega?'<br>Entrega: '+fday(draft.entrega):''),5)}
+   ${row('Firma',draft.firma?'<span style="display:inline-block;background:#fff;border-radius:8px;padding:4px"><img src="'+draft.firma+'" alt="Firma" style="height:44px;display:block"></span>':'Sin firma',6)}</div>`},
+  ok:()=>''}
+];
+function viewWizard(){
+  const s=STEPS[step],last=step===STEPS.length-1;
+  return `<div class="wiz">
+   <div class="wtop"><button class="back" id="wExit" style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>${editingId?'Cancelar':'Salir'}</button>
+   <span class="stepn">${editingId?'Editando nº '+pad(draft.no)+' · ':''}Paso ${step+1} de ${STEPS.length} · ${s.t}</span></div>
+   <div class="bar"><i style="width:${(step+1)/STEPS.length*100}%"></i></div>
+   <h2 class="q">${s.q}</h2>${s.help?`<p class="qhelp">${s.help}</p>`:'<div style="height:16px"></div>'}
+   <form id="wf" novalidate>${s.html()}<div class="err" id="werr" role="alert"></div>
+   <div class="wfoot">${step>0?'<button type="button" class="btn big" id="wBack">Atrás</button>':'<span></span>'}
+   ${last?`<button type="button" class="btn big" id="wSave">${editingId?'Guardar':'Guardar'}</button><button type="submit" class="btn primary big">${editingId?'Guardar e imprimir':'Guardar e imprimir'}</button>`:'<button type="submit" class="btn primary big">Siguiente</button>'}</div></form></div>`}
+function bindWizard(){
+  const f=$('#wf');
+  f.querySelectorAll('input.inp,textarea.inp').forEach(el=>{
+    el.addEventListener('input',()=>{if(el.id==='marcaOtra'){draft.marca=el.value||'Otra'}else draft[el.id]=el.value;saveDraft();if(el.id==='nombre'||el.id==='apellidos')sugg();$('#werr').textContent=''});
+  });
+  const first=f.querySelector('input.inp:not([type=date]),textarea');if(first&&matchMedia('(pointer:fine)').matches)first.focus();
+  f.addEventListener('submit',e=>{e.preventDefault();next(step===STEPS.length-1)});
+  $('#wBack')&&($('#wBack').onclick=()=>{step--;saveDraft();render();window.scrollTo(0,0)});
+  $('#wSave')&&($('#wSave').onclick=()=>next(false));
+  $('#wExit').onclick=()=>{if(editingId){editingId=null;go('detail',draft.id);return}
+    ask('¿Salir de la nueva reparación?','Lo que has rellenado se guarda como borrador y podrás continuar más tarde.','Salir',()=>go('list'))};
+  // Marca
+  f.querySelectorAll('[data-marca]').forEach(b=>b.onclick=()=>{const m=b.dataset.marca;if(draft.marca!==m){draft.marca=m;if(m!=='Otra')draft.modelo=draft.modelo&&MARCAS[m]?.includes(draft.modelo)?draft.modelo:''}saveDraft();render();setTimeout(()=>($('#marcaOtra')||$('#modelo')).focus(),30)});
+  f.querySelectorAll('[data-comp]').forEach(b=>b.onclick=()=>{draft.compania=draft.compania===b.dataset.comp?'':b.dataset.comp;$('#compania').value=draft.compania;f.querySelectorAll('[data-comp]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.comp===draft.compania)));saveDraft()});
+  f.querySelectorAll('[data-av]').forEach(b=>b.onclick=()=>{const a=b.dataset.av,i=draft.averias.indexOf(a);i<0?draft.averias.push(a):draft.averias.splice(i,1);b.setAttribute('aria-pressed',String(i<0));$('#werr').textContent='';saveDraft()});
+  f.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>{const d=new Date();d.setDate(d.getDate()+ +b.dataset.days);const v=d.toISOString().slice(0,10);draft.entrega=v;$('#entrega').value=v;saveDraft()});
+  f.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{step=+b.dataset.jump;render();window.scrollTo(0,0)});
+  const rv=$('#revision');rv&&rv.addEventListener('change',()=>{draft.revision=rv.checked;saveDraft()});
+  const im=$('#importe');im&&im.addEventListener('input',()=>{$('#payinfo').innerHTML=payHtml()});
+  const ac=$('#acepta');ac&&ac.addEventListener('change',()=>{draft.acepta=ac.checked;$('#werr').textContent='';saveDraft()});
+  if($('#sig'))mountSig();
+  if($('#sugg'))sugg();
+}
+function payHtml(){
+  const imp=+draft.importe||0;
+  if(imp<=0)return `<div class="payinfo none">Cuando pongas el importe verás cuánto cobrar ahora: el ${S.pctAdelanto}% si es hasta ${money(S.limite100)}, o el 100% si pasa de esa cantidad.</div>`;
+  const a=adelantoDe(imp);
+  return `<div class="payinfo"><p>${reglaTxt(imp)}</p><div><span>Cobrar ahora</span><b>${money(a)}</b></div><div><span>Al recoger</span><b>${money(r2(imp-a))}</b></div></div>`}
+function sugg(){
+  const box=$('#sugg');if(!box)return;const n=(draft.nombre+' '+draft.apellidos).trim().toLowerCase();
+  if(n.length<2){box.innerHTML='';return}
+  const seen=new Set(),L=[];
+  R.slice().sort((a,b)=>b.no-a.no).forEach(r=>{const k=String(r.telefono).replace(/\D/g,'');if(!k||seen.has(k))return;if(full(r).toLowerCase().includes(n)){seen.add(k);L.push(r)}});
+  box.innerHTML=L.length?`<div class="suggest"><p>Clientes anteriores</p>${L.slice(0,3).map(r=>`<button type="button" data-cli="${r.id}"><b>${esc(full(r))}</b><span class="mono">${esc(r.telefono)}</span></button>`).join('')}</div>`:'';
+  box.querySelectorAll('[data-cli]').forEach(b=>b.onclick=()=>{const r=R.find(x=>x.id===b.dataset.cli);Object.assign(draft,{nombre:r.nombre,apellidos:r.apellidos,telefono:r.telefono,nif:r.nif||''});step=2;saveDraft();render();toast('Datos de '+r.nombre+' rellenados')});
+}
+function next(print){
+  const err=STEPS[step].ok();if(err){$('#werr').textContent=err;return}
+  if(step<STEPS.length-1){step++;saveDraft();render();window.scrollTo(0,0);return}
+  // Guardar
+  const now=new Date().toISOString();let r;
+  const clean={...draft,importe:draft.importe===''?0:+draft.importe,nombre:draft.nombre.trim(),apellidos:draft.apellidos.trim(),modelo:draft.modelo.trim(),imei:String(draft.imei).replace(/\D/g,'')};
+  delete clean.marcaOtra;clean.adelanto=adelantoDe(clean.importe);
+  if(editingId){const i=R.findIndex(x=>x.id===editingId);R[i]={...R[i],...clean};r=R[i];editingId=null}
+  else{let rc=reciboDe(now);while(R.some(x=>x.recibo===rc))rc=String(+rc+1);
+    r={...clean,recibo:rc,id:'r'+Date.now().toString(36),no:S.nextNo,fecha:now,estado:'pendiente',historial:[{estado:'pendiente',fecha:now}]};S.nextNo++;saveS();R.push(r);LS.del('gsm_draft')}
+  saveR();draft=null;state.view='detail';state.id=r.id;render();window.scrollTo(0,0);toast('Reparación nº '+pad(r.no)+' guardada');
+  if(print)printPreview(r);
+}
+function mountSig(){
+  const c=$('#sig'),b=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  c.width=b.width*dpr;c.height=b.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);
+  x.lineWidth=2.6;x.lineCap='round';x.lineJoin='round';x.strokeStyle=x.fillStyle='#0F1B2D';
+  if(draft.firma){const im=new Image();im.onload=()=>x.drawImage(im,0,0,b.width,b.height);im.src=draft.firma}
+  let down=false,last;const pt=e=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+  c.onpointerdown=e=>{e.preventDefault();down=true;try{c.setPointerCapture(e.pointerId)}catch(_){}last=pt(e);x.beginPath();x.arc(last.x,last.y,1.3,0,7);x.fill();$('#sigHint').hidden=true};
+  c.onpointermove=e=>{if(!down)return;const p=pt(e);x.beginPath();x.moveTo(last.x,last.y);x.lineTo(p.x,p.y);x.stroke();last=p};
+  c.onpointerup=c.onpointercancel=()=>{if(!down)return;down=false;
+    const o=document.createElement('canvas');o.width=600;o.height=Math.round(600*b.height/b.width);o.getContext('2d').drawImage(c,0,0,o.width,o.height);
+    draft.firma=o.toDataURL('image/png');saveDraft()};
+  $('#sigClear').onclick=()=>{x.clearRect(0,0,b.width,b.height);draft.firma='';$('#sigHint').hidden=false;saveDraft()};
+}
+
+/* ---------- Hoja imprimible ---------- */
+function sheetHtml(r){
+  const d=new Date(r.fecha);const L=(k,v,m)=>`<div class="ln"><b>${k}:</b><span${m?' class="mono"':''}>${esc(v)}</span></div>`;
+  const cb=(l,on)=>`<div class="cb"><i>${on?'✕':''}</i>${esc(l)}</div>`;
+  const ent=(r.historial||[]).filter(h=>h.estado==='entregada').pop();
+  return `<div class="sheet">
+   <div class="sh-top"><div class="sh-brand"><img src="${LOGO}" alt=""><div><div class="sh-logo">${esc(S.tienda).replace(/smart$/i,'<span>smart</span>')}</div><div class="sh-addr">${esc(S.direccion)}${S.telefono?'<br>Tel. '+esc(S.telefono):''}</div></div></div>
+   <div class="sh-meta"><div>RECIBO Nº <span class="bx mono">${rec(r)}</span></div><div>Fecha: <b>${d.getDate()}</b> de <b>${MESES[d.getMonth()]}</b> de <b>${d.getFullYear()}</b></div><div>IMPORTE <span class="bx g">${r.importe?money(r.importe):'&nbsp;€'}</span></div>
+   <div>PAGADO A CUENTA <span class="bx">${r.importe?money(adel(r)):'&nbsp;€'}</span></div><div>PENDIENTE <span class="bx">${r.importe?money(pendiente(r)):'&nbsp;€'}</span></div></div></div>
+   <div class="sh-no">No. <span>${pad(r.no)}</span></div>
+   <div class="sh-grid"><div class="sh-sec"><h4>DATOS TERMINAL:</h4>${L('MARCA',r.marca)}${L('MODELO',r.modelo)}${L('IMEI',r.imei,1)}${L('CÓDIGO DESBLOQUEO',r.codigo,1)}${L('COMPAÑÍA TELEFÓNICA',r.compania)}</div>
+   <div><div class="sh-client">${L('Nombre',r.nombre)}${L('Apellidos',r.apellidos)}${L('N.I.F',r.nif)}${L('Teléfono',r.telefono)}</div>
+   <div class="sh-rev"><i>${r.revision?'✕':''}</i>${(+S.revision).toLocaleString('es-ES')} € POR REVISIÓN</div></div></div>
+   <div class="sh-sec"><h4>REPARACIÓN:</h4></div>
+   <div class="sh-checks">${AVERIAS.map(a=>cb(a,(r.averias||[]).includes(a))).join('')}</div>
+   <div class="sh-otros">${r.otros?'<b>Otros:</b> '+esc(r.otros):''}${r.entrega?`${r.otros?'\n':''}<b>Entrega prevista:</b> ${fday(r.entrega)}`:''}</div>
+   <p class="sh-aviso">${esc(S.aviso)}</p>
+   <div class="sh-cond"><h5>CONDICIONES DEL SERVICIO</h5><ol>${S.condiciones.split('\n').filter(Boolean).map(c=>`<li>${esc(c)}</li>`).join('')}</ol></div>
+   <div class="sh-sign"><div>RECOGIDO<small>${ent?'Fecha: '+fdate(ent.fecha):'Fecha: ____ / ____ / ________'}</small></div><div>Firma de conformidad del Cliente${r.firma?`<img src="${r.firma}" alt="">`:''}</div></div>
+   <div class="sh-foot"><span>Orden nº ${pad(r.no)}</span><span>Conserve este resguardo para recoger su terminal</span></div></div>`}
+function printPreview(r){
+  modal(`<h3>Hoja para el cliente · nº ${pad(r.no)}</h3><div class="sheetwrap">${sheetHtml(r)}</div>
+   <div class="mact"><button class="btn" id="mClose">Cerrar</button><button class="btn primary" id="mPrint">Imprimir</button></div>`,true);
+  $('#mClose').onclick=closeModal;
+  $('#mPrint').onclick=()=>{$('#print').innerHTML=sheetHtml(r);
+    setTimeout(()=>{if(NATIVE)NATIVE.print({title:'GSMsmart '+pad(r.no)}).catch(e=>toast('No se ha podido imprimir: '+(e&&e.message||e)));else window.print()},80)};
+}
+window.addEventListener('afterprint',()=>{$('#print').innerHTML=''});
+
+/* ---------- Ajustes ---------- */
+function viewSettings(){
+  const f=(id,l,a='')=>`<div class="field"><label for="s_${id}">${l}</label><input class="inp" id="s_${id}" value="${esc(S[id])}" ${a}></div>`;
+  const ej=R.filter(r=>r.ejemplo).length;
+  return `<div class="wrap">${mobBrand}<div class="head"><div><h1>Ajustes</h1><p class="sub">Datos que salen en la hoja impresa</p></div></div>
+  <div class="sgrid">
+   <section class="card"><h3>Tienda</h3>${f('tienda','Nombre')}${f('direccion','Dirección')}${f('telefono','Teléfono de la tienda','type="tel"')}</section>
+   <section class="card"><h3>Numeración y precios</h3>${f('nextNo','Próximo número de orden','type="number" inputmode="numeric"')}${f('revision','Precio de la revisión (€)','type="number" inputmode="decimal" step="0.5"')}
+    <p class="note">Pon aquí el siguiente número de tu talonario para continuar la numeración.</p></section>
+   <section class="card full"><h3>Pago por adelantado</h3><div class="row2">${f('pctAdelanto','Porcentaje por adelantado (%)','type="number" inputmode="numeric" min="0" max="100"')}${f('limite100','A partir de este importe se paga el 100% (€)','type="number" inputmode="decimal" min="0"')}</div>
+    <p class="note" style="margin:0">Ahora: hasta ${money(S.limite100)} se cobra el ${S.pctAdelanto}% al dejar el móvil; si pasa de ${money(S.limite100)}, se cobra todo.</p></section>
+   <section class="card full"><h3>Textos de la hoja</h3>${f('aviso','Aviso')}
+    <div class="field"><label for="s_condiciones">Condiciones del servicio <small>(una por línea)</small></label><textarea class="inp" id="s_condiciones" rows="8">${esc(S.condiciones)}</textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="sSave">Guardar ajustes</button><button class="btn ghost" id="sReset">Restaurar textos originales</button></div></section>
+   <section class="card full"><h3>Copia de seguridad</h3><p class="note">Las reparaciones se guardan solo en este dispositivo. Haz una copia de vez en cuando (por ejemplo, al Drive) para no perderlas si se borra el navegador o cambias de equipo.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="sExp">Descargar copia</button><label class="btn" for="sImp">Cargar copia</label><input type="file" id="sImp" accept="application/json,.json" hidden>
+    ${ej?`<button class="btn danger ghost" id="sEj">Borrar las ${ej} reparaciones de ejemplo</button>`:''}</div>
+    <p class="note" style="margin-top:12px">${R.length} reparaciones guardadas.</p></section>
+  </div></div>`}
+function bindSettings(){
+  $('#sSave').onclick=()=>{['tienda','direccion','telefono','aviso','condiciones'].forEach(k=>S[k]=$('#s_'+k).value.trim());
+    const n=parseInt($('#s_nextNo').value,10);if(n>0)S.nextNo=n;const v=parseFloat($('#s_revision').value);if(v>=0)S.revision=v;
+    const p=parseFloat($('#s_pctAdelanto').value);if(p>=0&&p<=100)S.pctAdelanto=p;const l=parseFloat($('#s_limite100').value);if(l>=0)S.limite100=l;
+    saveS();render();toast('Ajustes guardados')};
+  $('#sReset').onclick=()=>{$('#s_aviso').value=DEF.aviso;$('#s_condiciones').value=DEF.condiciones;toast('Textos restaurados. Pulsa Guardar para aplicarlos.')};
+  $('#sExp').onclick=()=>{const json=JSON.stringify({app:'gsmsmart',version:1,fecha:new Date().toISOString(),ajustes:S,reparaciones:R},null,1);
+    const name='gsmsmart-copia-'+new Date().toISOString().slice(0,16).replace(/[-:T]/g,'')+'.json';
+    if(NATIVE){NATIVE.saveFile({name,content:json}).then(x=>toast('Copia guardada en '+x.path)).catch(e=>toast('No se ha podido guardar la copia: '+(e&&e.message||e)));return}
+    const blob=new Blob([json],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gsmsmart-copia-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)};
+  $('#sImp').onchange=e=>{const file=e.target.files[0];if(!file)return;const fr=new FileReader();fr.onload=()=>{try{const d=JSON.parse(fr.result);if(!Array.isArray(d.reparaciones))throw 0;
+    ask('¿Cargar esta copia?',`Tiene ${d.reparaciones.length} reparaciones. Sustituirá a las ${R.length} que hay ahora en este dispositivo.`,'Cargar copia',()=>{R=d.reparaciones;if(d.ajustes)S=Object.assign({},DEF,d.ajustes);saveR();saveS();render();toast('Copia cargada')})}
+    catch(_){toast('Ese archivo no es una copia de GSMsmart.')}};fr.readAsText(file);e.target.value=''};
+  $('#sEj')&&($('#sEj').onclick=()=>{R=R.filter(r=>!r.ejemplo);saveR();render();toast('Ejemplos borrados')});
+}
+
+$('#sideLogo').src=LOGO;
+render();
+if(!window.Capacitor&&'serviceWorker' in navigator&&location.protocol.startsWith('http')){try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(_){}}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
+
+/* ---------- App de Android ---------- */
+if(NATIVE){
+  // WhatsApp y otros enlaces externos se abren en su app
+  document.addEventListener('click',e=>{const a=e.target.closest('a[href^="http"]');if(!a)return;e.preventDefault();NATIVE.openUrl({url:a.href}).catch(()=>toast('No se ha podido abrir el enlace'))});
+  // Botón atrás de Android: cierra ventanas y vuelve atrás antes de salir
+  const APP=window.Capacitor.Plugins.App;
+  APP&&APP.addListener('backButton',()=>{
+    if(!$('#modal').hidden){closeModal();return}
+    if(state.view==='wizard'){if(editingId){editingId=null;go('detail',draft.id)}else if(step>0){step--;saveDraft();render()}else go('list');return}
+    if(state.view!=='list'){go('list');return}
+    APP.exitApp();
+  });
+}
+</script>
+<!--LOCAL--></body>
+</html><!--/LOCAL-->
